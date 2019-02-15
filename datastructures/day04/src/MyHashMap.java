@@ -53,7 +53,8 @@ public class MyHashMap<K, V> implements Map<K, V> {
         // TODO
         // hint: use key.hashCode() to calculate the key's hashCode using its built in hash function
         // then use % to choose which bucket to return.
-        return null;
+        int code = key.hashCode();
+        return buckets[code%(buckets.length-1)];
     }
 
     @Override
@@ -72,6 +73,11 @@ public class MyHashMap<K, V> implements Map<K, V> {
     @Override
     public boolean containsKey(Object key) {
         // TODO
+        for (int i = 0; i < chooseBucket(key).size(); i++) {
+            if (chooseBucket(key).get(i).key.equals(key)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -80,13 +86,29 @@ public class MyHashMap<K, V> implements Map<K, V> {
      */
     @Override
     public boolean containsValue(Object value) {
-        // TODO
+//         TODO
+        for (int i = 0; i < buckets.length; i++) {
+            if (!buckets[i].isEmpty()) {
+                for (int j = 0; j < buckets[i].size(); j++) {
+                    Entry thing = buckets[i].get(j);
+                    if (thing.getValue()==value) {
+                        return true;
+                    }
+                }
+            }
+
+        }
         return false;
     }
 
     @Override
     public V get(Object key) {
         // TODO
+        for (int i = 0; i < chooseBucket(key).size(); i++) {
+            if (chooseBucket(key).get(i).key.equals(key)) {
+                return chooseBucket(key).get(i).getValue();
+            }
+        }
         return null;
     }
 
@@ -99,7 +121,20 @@ public class MyHashMap<K, V> implements Map<K, V> {
         // TODO: Complete this method
         // hint: use chooseBucket() to determine which bucket to place the pair in
         // hint: use rehash() to appropriately grow the hashmap if needed
-        return null;
+        V val = null;
+        if (containsKey(key)) {
+            val = remove(key);
+        }
+        if (size >= buckets.length) {
+            rehash(GROWTH_FACTOR);
+        }
+        Entry entry = new Entry(key, value);
+        chooseBucket(key).addFirst(entry);
+        size++;
+//        System.out.print("add");
+//        System.out.print(key);
+//        System.out.println(value);
+        return val;
     }
 
     /**
@@ -112,7 +147,19 @@ public class MyHashMap<K, V> implements Map<K, V> {
         // TODO
         // hint: use chooseBucket() to determine which bucket the key would be
         // hint: use rehash() to appropriately grow the hashmap if needed
-        return null;
+        if ((double)(size)/(double)(buckets.length) < BETA) {
+            rehash(SHRINK_FACTOR);
+        }
+        V val = null;
+        for (int i = 0; i < chooseBucket(key).size(); i++) {
+            if (chooseBucket(key).get(i).key.equals(key)) {
+                val = chooseBucket(key).remove(i).value;
+//                System.out.print("remove: ");
+//                System.out.println(key);
+                size--;
+            }
+        }
+        return val;
     }
 
     @Override
@@ -130,6 +177,25 @@ public class MyHashMap<K, V> implements Map<K, V> {
     private void rehash(double growthFactor) {
         // TODO
         // hint: once you have removed all values from the buckets, use put(k, v) to add them back in the correct place
+//        System.out.println("Starting rehash");
+        LinkedList<Entry> temp = new LinkedList<>();
+        for (int i = 0; i < buckets.length; i++) {
+            while (!buckets[i].isEmpty()) {
+                temp.push(buckets[i].pop());
+            }
+        }
+        double grown = buckets.length*growthFactor;
+        int newsize = (int)Math.round(grown);
+        if (newsize < MIN_BUCKETS) {
+            newsize = MIN_BUCKETS;
+        }
+        initBuckets(newsize);
+        size = 0;
+        while (!temp.isEmpty()) {
+            Entry item = temp.pop();
+            put(item.key, item.value);
+        }
+//        System.out.println("Rehashed");
     }
 
     private void initBuckets(int size) {

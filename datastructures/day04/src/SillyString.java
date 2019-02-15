@@ -20,6 +20,9 @@ public class SillyString {
     @Override
     public int hashCode() {
         // TODO What is bad about this hash function??
+        // The output of the function is created in a way that is conducive to clumping.
+        // Similar strings are going to take up similar places in the array.
+        // In addition, different strings could easily add up to be the same.
         int total = 0;
         for (int i=0; i<innerString.length(); i++) {
             total += innerString.charAt(i);
