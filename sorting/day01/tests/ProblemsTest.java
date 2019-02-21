@@ -27,6 +27,15 @@ public class ProblemsTest {
 
     @Test
     public void testRunningMedianRandom() {
+//        double[] test = Problems.runningMedian(eightCase);
+//        for (int i = 0; i < test.length; i++) {
+//            System.out.print(test[i] + ",");
+//        }
+//        System.out.println();
+//        double[] real = Problems.runningMedianReallySlow(eightCase);
+//        for (int i = 0; i < real.length; i++) {
+//            System.out.print(real[i] + ",");
+//        }
         assertTrue(Arrays.equals(Problems.runningMedian(emptyCase), Problems.runningMedianReallySlow(emptyCase)));
         assertTrue(Arrays.equals(Problems.runningMedian(oneCase), Problems.runningMedianReallySlow(oneCase)));
         assertTrue(Arrays.equals(Problems.runningMedian(twoCase), Problems.runningMedianReallySlow(twoCase)));
