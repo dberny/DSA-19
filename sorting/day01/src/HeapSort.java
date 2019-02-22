@@ -55,8 +55,8 @@ public class HeapSort extends SortAlgorithm {
     }
 
     /**
-     * Best-case runtime:
-     * Worst-case runtime:
+     * Best-case runtime: O (nlogn)
+     * Worst-case runtime: O(nlogn)
      * Average-case runtime: O(nlogn)
      *
      * Space-complexity: O(n)

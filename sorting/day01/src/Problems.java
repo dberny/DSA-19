@@ -42,9 +42,6 @@ public class Problems {
      */
     public static double[] runningMedian(int[] inputStream) {
         double[] runningMedian = new double[inputStream.length];
-        // TODO
-        int med1 = Integer.MIN_VALUE;
-        int med2 = Integer.MIN_VALUE;
         PriorityQueue<Integer> bigHalf = minPQ();
         PriorityQueue<Integer> smallHalf = maxPQ();
         for (int i = 0; i < inputStream.length; i++) {
