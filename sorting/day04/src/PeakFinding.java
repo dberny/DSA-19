@@ -47,15 +47,45 @@ public class PeakFinding {
         return maxIndex;
     }
 
+    static int findPeak(int l, int r, int[] nums) {
+        if (l > r) {
+            return -1;
+        }
+        int mid = (l+r)/2;
+        int peak = peakOneD(mid, nums);
+        if (peak == 0) {
+            return mid;
+        }
+        if (peak == -1) {
+            return findPeak(l, mid, nums);
+        }
+        else {
+            return (findPeak(mid+1, r, nums));
+        }
+    }
 
     public static int findOneDPeak(int[] nums) {
-        // TODO
-        return 0;
+        return findPeak(0, nums.length-1, nums);
     }
 
     public static int[] findTwoDPeak(int[][] nums) {
-        // TODO
-        return null;
+        int answer[] = new int[2];
+        int mid = nums.length/2;
+        if ((peakX(nums[0].length-1, nums.length-1, nums) == 0) && peakY(nums[0].length-1, nums.length-1, nums) == 0) {
+            answer[0] = nums.length-1;
+            answer[1] = nums[0].length-1;
+            return answer;
+        }
+        if (mid == 0 || mid == nums.length-1) {
+            answer[0] = mid;
+            answer[1] = maxYIndex(mid, 0, nums.length-1, nums);
+        }
+        else {
+            answer[0] = mid;
+            answer[1] = findOneDPeak(nums[mid]);
+        }
+        return answer;
     }
+
 
 }
