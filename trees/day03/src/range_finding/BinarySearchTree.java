@@ -74,7 +74,7 @@ public class BinarySearchTree<T extends Comparable<T>> {
     /**
      * Returns the node with the smallest key in the subtree.
      */
-    private RangeNode<T> min(RangeNode<T> x) {
+    public RangeNode<T> min(RangeNode<T> x) {
         if (x.leftChild == null) return x;
         return min(x.leftChild);
     }

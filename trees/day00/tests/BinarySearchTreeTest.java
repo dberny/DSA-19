@@ -139,7 +139,15 @@ public class BinarySearchTreeTest {
             list.remove(randomNum);
             Integer[] expected = Arrays.copyOf(list.toArray(), list.size(), Integer[].class);
             Object[] traversal = bst.inOrderTraversal().toArray();
+            for (Integer i : expected) {
+                System.out.print(i);
+            }
+            System.out.println();
             Integer[] received = Arrays.copyOf(traversal, traversal.length, Integer[].class);
+            for (Integer i : received) {
+                System.out.print(i);
+            }
+            System.out.println();
             assertArrayEquals(expected, received);
         }
     }
@@ -147,6 +155,7 @@ public class BinarySearchTreeTest {
 
     @Test
     public void testDelete() {
+
         delTest(bsts[0], inputs[0]);
         delTest(bsts[1], inputs[1]);
         delTest(bsts[2], inputs[2]);

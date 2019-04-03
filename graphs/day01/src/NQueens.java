@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class NQueens {
@@ -51,8 +52,83 @@ public class NQueens {
 
     public static List<char[][]> nQueensSolutions(int n) {
         // TODO
+        List<Integer> cols = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            cols.add(i);
+        }
+        char[][] board = new char[n][n];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                board[i][j] = '.';
+            }
+        }
+
         List<char[][]> answers = new ArrayList<>();
+
+        queensHelper(answers, n, 0, board, cols);
+//        for (int i = 0; i < answers.size(); i++) {
+//            printBoard(answers.get(i));
+//            System.out.println();
+//        }
+
         return answers;
     }
 
+    public static void queensHelper(List<char[][]> permutations, int n, int row, char[][] board, List<Integer> cols) {
+//        System.out.println(cols);
+        if (cols.isEmpty()) {
+//            for (int i = 0; i < board.length; i++) {
+//                for (int j = 0; j < board.length; j++) {
+////                    if (board[i][j] != 'Q') {
+////                        board[i][j] = '.';
+////                    }
+//                }
+//            }
+//            printBoard(board);
+            char[][] copy = copyOf(board);
+            permutations.add(copy);
+            return;
+        }
+//        boolean setQueen = false;
+        for (int i = 0; i < cols.size(); i++) {
+            int col = cols.remove(i);
+            if (!checkDiagonal(board, row, col)) {
+                board[row][col] = 'Q';
+//                setQueen = true;
+//                System.out.print("col " + col + " ");
+//                System.out.println("row " + row);
+                queensHelper(permutations, n, row+1, board, cols);
+                board[row][col] = '.';
+                cols.add(i, col);
+            }
+            else {
+                cols.add(i, col);
+//                return;
+            }
+        }
+    }
+
+    public static void printBoard(char[][] board) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board.length; j++) {
+                System.out.print(board[i][j]);
+            }
+            System.out.println();
+        }
+    }
+//    public static void queensHelper(List<Integer> cols, List<char[][]> permutations, int n) {
+//        for (int i = 0; i < n; i++) {
+//            char[][] board = new char[n][n];
+//            boolean putQueen = false;
+//            for (int j = 0; j < n; j++) {
+//                int col = cols.remove(j);
+//                if (!checkDiagonal(board, i, j)) {
+//                    board[i][j] = 'Q';
+//                }
+//                else {
+//                    cols.add(j, col);
+//                }
+//            }
+//        }
+//    }
 }

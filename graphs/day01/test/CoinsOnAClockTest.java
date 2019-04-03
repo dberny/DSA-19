@@ -22,6 +22,7 @@ public class CoinsOnAClockTest {
     /**
      * Test method for {@link CoinsOnAClock#coinsOnAClock(int, int, int, int)}.
      */
+
     @Test
     public void test12Clock1() {
         List<char[]> solutions = CoinsOnAClock.coinsOnAClock(4, 4, 4, 12);

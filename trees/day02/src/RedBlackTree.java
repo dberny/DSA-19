@@ -36,18 +36,42 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree<T> {
     // make a left-leaning link lean to the right
     TreeNode<T> rotateRight(TreeNode<T> h) {
         // TODO
-        return h;
+        TreeNode x = h.leftChild;
+        if (x == null) {
+            return h;
+        }
+        TreeNode b = x.rightChild;
+        x.rightChild = h;
+        h.leftChild = b;
+        x.color = x.rightChild.color;
+        x.rightChild.color = RED;
+        return x;
+//        return h;
     }
 
     // make a right-leaning link lean to the left
     TreeNode<T> rotateLeft(TreeNode<T> h) {
-        // TODO
-        return h;
+        TreeNode y = h.rightChild;
+        if (y == null) {
+            return h;
+        }
+        TreeNode b = y.leftChild;
+        y.leftChild = h;
+        h.rightChild = b;
+        y.color = y.leftChild.color;
+        y.leftChild.color = RED;
+        return y;
     }
 
     // flip the colors of a TreeNode and its two children
     TreeNode<T> flipColors(TreeNode<T> h) {
         // TODO
+        if (h.leftChild == null || h.rightChild == null) {
+            return h;
+        }
+        h.leftChild.color = !h.leftChild.color;
+        h.rightChild.color = !h.rightChild.color;
+        h.color = !h.color;
         return h;
     }
 
@@ -61,18 +85,35 @@ public class RedBlackTree<T extends Comparable<T>> extends BinarySearchTree<T> {
      */
     private TreeNode<T> balance(TreeNode<T> h) {
         // TODO
+        if (isRed(h.rightChild)) {
+            h = rotateLeft(h);
+            if (h == root) {
+                root.color=BLACK;
+            }
+        }
+        if (isRed(h.leftChild) && isRed(h.leftChild.leftChild)) {
+            h = rotateRight(h);
+//            h=flipColors(h);
+        }
+        if(isRed(h.leftChild) && isRed(h.rightChild)) {
+            flipColors(h);
+        }
+//        root.color = BLACK;
         return h;
     }
 
 
     /**
      * Recursively insert a new node into the BST
-     * Runtime: TODO
+     * Runtime: O(log n)
      */
     @Override
     TreeNode<T> insert(TreeNode<T> h, T key) {
         h = super.insert(h, key);
+//        h.color = RED;
         // TODO: use balance to correct for the three rotation cases
+        h = balance(h);
+//        root.color=BLACK;
         return h;
     }
 

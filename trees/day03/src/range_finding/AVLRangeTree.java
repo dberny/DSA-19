@@ -13,8 +13,11 @@ public class AVLRangeTree extends BinarySearchTree<Integer> {
         n = super.delete(n, key);
         if (n != null) {
             n.height = 1 + Math.max(height(n.leftChild), height(n.rightChild));
+            n.leftChildren = countChildren(n.leftChild) +1;
+            n.rightChildren = countChildren(n.rightChild) + 1;
             return balance(n);
         }
+
         return null;
     }
 
@@ -26,6 +29,8 @@ public class AVLRangeTree extends BinarySearchTree<Integer> {
         n = super.insert(n, key);
         if (n != null) {
             n.height = 1 + Math.max(height(n.leftChild), height(n.rightChild));
+            n.leftChildren = countChildren(n.leftChild) +1;
+            n.rightChildren = countChildren(n.rightChild) + 1;
             return balance(n);
         }
         return null;
@@ -39,6 +44,8 @@ public class AVLRangeTree extends BinarySearchTree<Integer> {
         n = super.deleteMin(n);
         if (n != null) {
             n.height = 1 + Math.max(height(n.leftChild), height(n.rightChild));
+            n.leftChildren = countChildren(n.leftChild) +1;
+            n.rightChildren = countChildren(n.rightChild) + 1;
             return balance(n);
         }
         return null;
@@ -70,19 +77,71 @@ public class AVLRangeTree extends BinarySearchTree<Integer> {
         return x;
     }
 
+    public int countChildren(RangeNode node) {
+        if (node == null) {
+            return -1;
+        }
+        return node.leftChildren + node.rightChildren;
+    }
     // Return all keys that are between [lo, hi] (inclusive).
     // TODO: runtime = O(?)
     public List<Integer> rangeIndex(int lo, int hi) {
         // TODO
+//        RangeNode min = findStart(root, lo);
+//        System.out.println(min.key);
         List<Integer> l = new LinkedList<>();
+        inOrderRange(root, l, lo, hi);
+        System.out.println(l);
         return l;
+    }
+    public void inOrderRange(RangeNode node, List list, int lo, int hi) {
+        if (node != null) {
+            inOrderRange(node.leftChild, list, lo, hi);
+            System.out.print(node.key);
+            if (node.key.compareTo(hi) <= 0 && node.key.compareTo(lo) >=0) {
+                list.add(node.key);
+            }
+//            else {
+//                return;
+//            }
+            inOrderRange(node.rightChild, list, lo, hi);
+        }
+    }
+
+    public RangeNode findStart(RangeNode node, int lo) {
+        if (node.leftChild == null) {
+            return node;
+        }
+        if (node.key.compareTo(lo) > 0) {
+            return findStart(node.leftChild, lo);
+        }
+        return node;
     }
 
     // return the number of keys between [lo, hi], inclusive
     // TODO: runtime = O(?)
     public int rangeCount(int lo, int hi) {
         // TODO
-        return 0;
+        int high = greaterThan(hi, root);
+//        System.out.println(high);
+        int low = greaterThan(lo-1, root);
+//        System.out.println(low);
+        int between = high-low;
+        return between;
+    }
+
+    // return the num of nodes smaller than num
+    public int greaterThan(int num, RangeNode node) {
+        if (node == null) {
+            return 0;
+        }
+        if (node.key.compareTo(num) <= 0) {
+            System.out.println(node.leftChildren);
+//            System.out.println(node.key);
+//            System.out.println(node.leftChildren + 1 + greaterThan(num, node.rightChild));
+            return node.leftChildren + 1 + greaterThan(num, node.rightChild);
+        }
+        return greaterThan(num, node.leftChild);
     }
 
     /**
@@ -105,6 +164,10 @@ public class AVLRangeTree extends BinarySearchTree<Integer> {
         y.rightChild = x;
         x.height = 1 + Math.max(height(x.leftChild), height(x.rightChild));
         y.height = 1 + Math.max(height(y.leftChild), height(y.rightChild));
+        x.leftChildren = countChildren(x.leftChild)+1;
+        x.rightChildren = countChildren(x.rightChild)+1;
+        y.leftChildren = countChildren(y.leftChild)+1;
+        y.rightChildren = countChildren(y.rightChild)+1;
         return y;
     }
 
@@ -117,6 +180,10 @@ public class AVLRangeTree extends BinarySearchTree<Integer> {
         y.leftChild = x;
         x.height = 1 + Math.max(height(x.leftChild), height(x.rightChild));
         y.height = 1 + Math.max(height(y.leftChild), height(y.rightChild));
+        x.leftChildren = countChildren(x.leftChild)+1;
+        x.rightChildren = countChildren(x.rightChild)+1;
+        y.leftChildren = countChildren(y.leftChild)+1;
+        y.rightChildren = countChildren(y.rightChild)+1;
         return y;
     }
 }
