@@ -10,6 +10,7 @@ public class Solver {
     public int minMoves = -1;
     private State solutionState;
     private boolean solved = false;
+    private Board init;
 
     /**
      * State class to make the cost calculations simple
@@ -27,7 +28,7 @@ public class Solver {
             this.moves = moves;
             this.prev = prev;
             // TODO
-            cost = 0;
+            cost = board.manhattan() + moves;
         }
 
         @Override
@@ -37,14 +38,21 @@ public class Solver {
             if (!(s instanceof State)) return false;
             return ((State) s).board.equals(this.board);
         }
+
+        public int compareTo(State s) {
+            return this.cost - s.cost;
+        }
     }
 
     /*
      * Return the root state of a given state
      */
     private State root(State state) {
-        // TODO: Your code here
-        return null;
+        State current = state;
+        while(current.prev != null) {
+            current = current.prev;
+        }
+        return current;
     }
 
     /*
@@ -53,23 +61,55 @@ public class Solver {
      * and a identify the shortest path to the the goal state
      */
     public Solver(Board initial) {
-        // TODO: Your code here
+        init = initial;
+        solution();
     }
+
+
 
     /*
      * Is the input board a solvable state
      * Research how to check this without exploring all states
      */
     public boolean isSolvable() {
-        // TODO: Your code here
-        return false;
+        return init.solvable();
     }
 
     /*
      * Return the sequence of boards in a shortest solution, null if unsolvable
      */
     public Iterable<Board> solution() {
-        // TODO: Your code here
+        if (!init.solvable()) {
+            return null;
+        }
+        HashSet<State> visited = new HashSet<>();
+        PriorityQueue<State> states = new PriorityQueue<>(State::compareTo);
+        State initState = new State(init, 0, null);
+        states.add(initState);
+        visited.add(initState);
+
+        while(!states.isEmpty()) {
+            State current = states.remove();
+            if (current.board.isGoal()) {
+                solutionState = current;
+                solved = true;
+                minMoves = current.moves;
+                LinkedList<Board> boards = new LinkedList<>();
+                while(current.prev != null) {
+                    current = current.prev;
+                    boards.add(current.board);
+                }
+                return boards;
+            }
+            Iterable<Board> neighbours = current.board.neighbors();
+            for (Board board : neighbours) {
+                State state = new State(board, current.moves+1, current);
+                if (!visited.contains(state)) {
+                    visited.add(state);
+                    states.add(state);
+                }
+            }
+        }
         return null;
     }
 

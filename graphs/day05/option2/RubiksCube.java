@@ -7,6 +7,30 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RubiksCube {
 
     private BitSet cube;
+    private char last;
+    private char[] rotats = {'u', 'U', 'R', 'r', 'f', 'F'};
+
+    private class State {
+        // Each state needs to keep track of its cost and the previous state
+        private RubiksCube cube;
+        private int moves; // equal to g-cost in A*
+        public int cost; // equal to f-cost in A*
+        private State prev;
+        private char last;
+
+        public State(RubiksCube cube, int moves, State prev, char last) {
+            this.cube = cube;
+            this.moves = moves;
+            this.prev = prev;
+            this.last = last;
+            // TODO
+            cost = this.cube.manhattan() + this.moves;
+        }
+
+        public int compareTo(State s) {
+            return this.cost - s.cost;
+        }
+    }
 
     // initialize a solved rubiks cube
     public RubiksCube() {
@@ -99,6 +123,35 @@ public class RubiksCube {
         return rub;
     }
 
+    public Iterable<RubiksCube> neighbors() {
+        LinkedList<RubiksCube> cubes = new LinkedList<>();
+        RubiksCube newcube1 =  new RubiksCube(cube);
+        newcube1.rotate('U');
+        newcube1.last = 'U';
+        cubes.add(newcube1);
+        RubiksCube newcube2 = new RubiksCube(cube);
+        newcube2.rotate('u');
+        newcube2.last = 'u';
+        cubes.add(newcube2);
+        RubiksCube newcube3 = new RubiksCube(cube);
+        newcube3.rotate('R');
+        newcube3.last = 'R';
+        cubes.add(newcube3);
+        RubiksCube newcube4 = new RubiksCube(cube);
+        newcube4.rotate('r');
+        newcube4.last = 'r';
+        cubes.add(newcube4);
+        RubiksCube newcube5 = new RubiksCube(cube);
+        newcube5.rotate('F');
+        newcube5.last = 'F';
+        cubes.add(newcube5);
+        RubiksCube newcube6 = new RubiksCube(cube);
+        newcube6.rotate('f');
+        newcube6.last = 'f';
+        cubes.add(newcube6);
+        return cubes;
+    }
+
 
     // Given a character in ['u', 'U', 'r', 'R', 'f', 'F'], return a new rubik's cube with the rotation applied
     // Do not modify this rubik's cube.
@@ -187,10 +240,69 @@ public class RubiksCube {
         return listTurns;
     }
 
-
+    public int manhattan() {
+        int cost = 0;
+        for (int i = 0; i < 24; i++) {
+            int color = getColor(i);
+            int correct = i/4;
+            if (color == correct) {
+                continue;
+            }
+            if (Math.abs(color-correct) == 3) {
+                cost += 2;
+            }
+            else {
+                cost += 1;
+            }
+        }
+        return cost/8;
+    }
     // return the list of rotations needed to solve a rubik's cube
     public List<Character> solve() {
         // TODO
+        HashMap<RubiksCube, State> visited = new HashMap<>();
+        PriorityQueue<State> states = new PriorityQueue<>(State::compareTo);
+        State initState = new State(new RubiksCube(cube), 0, null, '-');
+        states.add(initState);
+        visited.put(initState.cube, initState);
+        LinkedList<Character> moves = new LinkedList<>();
+
+
+        while(!states.isEmpty()) {
+//            System.out.println(states);
+            State current = states.remove();
+            if (current.cube.isSolved()) {
+                State solutionState = visited.get(current.cube);
+
+
+                moves.addFirst(solutionState.last);
+                while(solutionState.prev != null) {
+//                    System.out.println(solutionState.cost);
+
+                    solutionState = visited.get(solutionState.prev.cube);
+                    moves.addFirst(solutionState.last);
+                }
+
+                moves.remove(0);
+//                System.out.println(moves);
+                return moves;
+            }
+//            Iterable<RubiksCube> neighbours = current.cube.neighbors();
+            for (char rot : rotats) {
+                RubiksCube newcube = new RubiksCube(current.cube);
+                newcube = newcube.rotate(rot);
+                State state = new State(new RubiksCube(newcube), current.moves+1, current, rot);
+                if (visited.containsKey(state.cube)) {
+                    if (visited.get(newcube).moves > state.moves) {
+                        visited.put(newcube, state);
+                    }
+                }
+                if (!visited.containsKey(state.cube)) {
+                    visited.put(state.cube, state);
+                    states.add(state);
+                }
+            }
+        }
         return new ArrayList<>();
     }
 
