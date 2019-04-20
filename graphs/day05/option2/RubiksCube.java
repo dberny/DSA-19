@@ -23,7 +23,6 @@ public class RubiksCube {
             this.moves = moves;
             this.prev = prev;
             this.last = last;
-            // TODO
             cost = this.cube.manhattan() + this.moves;
         }
 
@@ -267,7 +266,6 @@ public class RubiksCube {
         visited.put(initState.cube, initState);
         LinkedList<Character> moves = new LinkedList<>();
 
-
         while(!states.isEmpty()) {
 //            System.out.println(states);
             State current = states.remove();
@@ -292,11 +290,11 @@ public class RubiksCube {
                 RubiksCube newcube = new RubiksCube(current.cube);
                 newcube = newcube.rotate(rot);
                 State state = new State(new RubiksCube(newcube), current.moves+1, current, rot);
-                if (visited.containsKey(state.cube)) {
-                    if (visited.get(newcube).moves > state.moves) {
-                        visited.put(newcube, state);
-                    }
-                }
+//                if (visited.containsKey(state.cube)) {
+//                    if (visited.get(newcube).moves > state.moves) {
+//                        visited.put(newcube, state);
+//                    }
+//                }
                 if (!visited.containsKey(state.cube)) {
                     visited.put(state.cube, state);
                     states.add(state);
@@ -305,5 +303,4 @@ public class RubiksCube {
         }
         return new ArrayList<>();
     }
-
 }
