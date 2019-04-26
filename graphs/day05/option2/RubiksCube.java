@@ -7,7 +7,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class RubiksCube {
 
     private BitSet cube;
-<<<<<<< HEAD
     private char last;
     private char[] rotats = {'u', 'U', 'R', 'r', 'f', 'F'};
 
@@ -31,9 +30,7 @@ public class RubiksCube {
             return this.cost - s.cost;
         }
     }
-=======
     private HashMap<Integer, HashMap<Integer, Integer>> distances;
->>>>>>> 14343db58a6c6468c44ca7fdf45b96abbe17b18c
 
     // initialize a solved rubiks cube
     public RubiksCube() {
@@ -47,7 +44,7 @@ public class RubiksCube {
     }
 
     public void populate_hm(){
-        {0,19,22,}
+        {0,19,22,};
 
         distances = new HashMap<>();
         for(int i = 0; i < 24; i++){
@@ -263,7 +260,6 @@ public class RubiksCube {
         return listTurns;
     }
 
-<<<<<<< HEAD
     public int manhattan() {
         int cost = 0;
         for (int i = 0; i < 24; i++) {
@@ -281,11 +277,9 @@ public class RubiksCube {
         }
         return cost/8;
     }
-=======
 
 
 
->>>>>>> 14343db58a6c6468c44ca7fdf45b96abbe17b18c
     // return the list of rotations needed to solve a rubik's cube
     public List<Character> solve() {
         // TODO
