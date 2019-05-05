@@ -24,7 +24,7 @@ public class SplitCoinsTest {
             for(int j = 0; j < n; j++){
                 coins[j] = input.nextInt();
             }
-
+            System.out.println("Test num: " + i);
             assertEquals(output.nextInt(), SplitCoins.splitCoins(coins));
 
             input.close();

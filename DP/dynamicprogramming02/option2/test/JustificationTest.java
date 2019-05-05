@@ -9,8 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class JustificationTest {
 
     private static double cost(String[] words, int lo, int hi, int m) {
-        if (hi <= lo)
+        if (hi < lo){
+            System.out.println("lo " + lo + " hi " + hi);
             throw new IllegalArgumentException("Hi must be higher than Lo");
+
+        }
         int length = hi-lo-1; // account for spaces;
         for (int i = lo; i < hi; i++) {
             length += words[i].length();
@@ -23,6 +26,8 @@ public class JustificationTest {
     private void assertCorrectSoln(List<Integer> best, List<Integer> other, String[] words, int m) {
         double cost1 = 0;
         double cost2 = 0;
+        System.out.println(best);
+        System.out.println(other);
 
         for (int i = 0; i < best.size()-1; i++)
             cost1 += cost(words, best.get(i), best.get(i+1), m);

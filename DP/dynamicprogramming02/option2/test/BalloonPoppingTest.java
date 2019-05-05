@@ -8,6 +8,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BalloonPoppingTest {
     @Test
+    public void testBalloons(){
+        int[] input = new int[]{1,2,3,4,5,6};
+        assertEquals(252,BalloonPopping.maxPoints(input));
+    }
+    @Test
     public void testBalloons1(){
         int[] input = new int[]{2,4,3,5};
         assertEquals(115,BalloonPopping.maxPoints(input));

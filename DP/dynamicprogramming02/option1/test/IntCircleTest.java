@@ -1,8 +1,25 @@
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class IntCircleTest {
+    @Test
+    public void pop() {
+        //Verified by hand
+        int[] arr = new int[]{1,2,3,4,5,6};
+        int[] correct = new int[]{1,2,6};
+        assertArrayEquals(correct, IntCircle.pop(arr, 3));
+    }
+
+    @Test
+    public void popSum() {
+        //Verified by hand
+        int[] arr = new int[]{1,2,3,4,5,6};
+        int correct = 60;
+        assertEquals(correct, IntCircle.popNum(arr, 3));
+    }
+
 
     @Test
     public void testCircle1() {
