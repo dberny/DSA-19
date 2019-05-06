@@ -4,88 +4,81 @@ import java.util.HashMap;
 
 public class IntCircle{
     public static int maxValue(int[] circle) {
-        int[][] dp = new int[circle.length+2][circle.length+2];
+        ArrayList<Integer> nums = new ArrayList<Integer>();
         for (int num : circle) {
-            System.out.print(num + " ");
+            nums.add(num);
         }
-        System.out.println();
-
-        for (int subSize = 1; subSize < circle.length; subSize++) {
-            for (int left = 1; left < circle.length-subSize; left++) {
-//                for (int right = 1; right < nums.length-1; right++) {
-                int right = left + subSize - 1;
-                if (left > right) {
-                    continue;
-                }
-                if (subSize == 1) {
-                    dp[left][right] = circle[left];
-                    System.out.println(left + " " + circle[left]);
-                }
-
-                for (int mid = left; mid <= right; mid++) {
-//                    System.out.println(dp[i][mid-1] + nums[i-1] * nums[mid] * nums[j+1] + dp[mid+1][j]);
-                    dp[left][right] = Math.max(dp[left][right], dp[left][mid-1] + circle[left-1] * circle[mid] * circle[right+1] + dp[mid+1][right]);
-                }
-//                }
-            }
-        }
-        printdp(dp);
-//        return dp[1][B.length];
-        return 0;
+        HashMap<ArrayList<Integer>, Integer> dict = new HashMap<>();
+        int out = memo(nums, dict);
+        return out;
     }
 
-    public static int memo(int[] nums, HashMap<Integer[], Integer> dict) {
+    public static int memo(ArrayList<Integer> nums, HashMap<ArrayList<Integer>, Integer> dict) {
+//        System.out.println(nums);
         if (dict.containsKey(nums)) {
+//            System.out.println("already here");
             return dict.get(nums);
         }
-        if (nums.length == 3) {
+        if (nums.size() == 3) {
             int prod = 1;
             for (int num : nums) {
                 prod *= num;
             }
+            dict.put(nums, prod);
+            System.out.println(prod);
+            return prod;
         }
-        ArrayList<Integer> outs = new ArrayList<>();
-        int[] pops = new int[nums.length-2];
-        for (int i = 1; i < nums.length-1; i++) {
-//            int[] newarray = pop(nums, i);
+
+//        ArrayList<Integer> outs = new ArrayList<>();
+        ArrayList<Integer> pops = new ArrayList<>();
+        for (int i = 1; i < nums.size()-1; i++) {
             int pop = popNum(nums, i);
-            pops[i-1] = pop;
+//            pops.add(pop);
+            ArrayList<Integer> popped = pop(nums, i);
+            int total = pop + memo(popped, dict);
+            pops.add(total);
+            dict.put(nums, total);
+//            return dict.get(nums);
         }
-        int indexMax = maxIndex(pops)+1;
-        int[] popped = pop(nums, indexMax);
-        int val = nums[indexMax] * memo(popped, dict);
-        dict.put(nums, val);
+//        System.out.println(pops);
+
+        int indexMax = maxIndex(pops);
+//        System.out.println("Maxindex " + indexMax);
+//        ArrayList<Integer> popped = pop(nums, indexMax+1);
+        int val = pops.get(indexMax) + memo(popped, dict);
+        dict.put(popped, val);
         return val;
     }
 
-    public static int maxIndex(int[] nums) {
+    public static int maxIndex(ArrayList<Integer> nums) {
         int num = Integer.MIN_VALUE;
         int index = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] > num) {
-                num = nums[i];
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums.get(i) > num) {
+                num = nums.get(i);
                 index = i;
             }
         }
         return index;
     }
 
-    public static int popNum(int[] nums, int index) {
+    public static int popNum(ArrayList<Integer> nums, int index) {
         int prod = 1;
         for (int i = index-1; i <= index+1; i++) {
-            prod *= nums[i];
+            prod *= nums.get(i);
         }
         return prod;
     }
 
-    public static int[] pop(int[] nums, int index) {
-        int[] copy = new int[nums.length-3];
+    public static ArrayList<Integer> pop(ArrayList<Integer> nums, int index) {
+//        int[] copy = new int[nums.size()-3];
+        ArrayList<Integer> copy = new ArrayList<>();
         int ind = 0;
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = 0; i < nums.size(); i++) {
             if (i == index-1 || i == index || i == index+1) {
                 continue;
             }
-            copy[ind] = nums[i];
+            copy.add(nums.get(i));
             ind++;
         }
         return copy;
